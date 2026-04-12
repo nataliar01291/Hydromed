@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Mapa Hydromed</title>
+
+  <!-- 🌍 Leaflet estilos -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
+
+  <style>
+    body{
+      margin:0;
+      font-family: Arial;
+      background:#0a192f;
+      color:white;
+    }
+
+    h2{
+      text-align:center;
+      padding:10px;
+      color:#4fc3f7;
+    }
+
+    /* 🗺️ MAPA SIEMPRE VISIBLE */
+    #map{
+      height: 90vh;
+      width: 100%;
+      background: #111; /* 👈 si falla JS igual se ve el bloque */
+    }
+  </style>
+</head>
+
+<body>
+
+<h2>🌧️ Mapa Hydromed</h2>
+
+<div id="map"></div>
+
+<!-- 🌍 Leaflet -->
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
+<script>
+try {
+  // ======================
+  // 1. MAPA BASE
+  // ======================
+  const map = L.map('map').setView([6.2442, -75.5812], 12);
+
+  // ======================
+  // 2. OPENSTREETMAP
+  // ======================
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: 'Hydromed'
+  }).addTo(map);
+
+  // ======================
+  // 3. DATOS
+  // ======================
+  const encuestas = JSON.parse(localStorage.getItem("encuestas")) || [];
+
+  const comunasCoords = {
+    "Manrique": [6.2663, -75.5480],
+    "Robledo": [6.2760, -75.5850],
+    "La Candelaria": [6.2518, -75.5636],
+    "San Javier": [6.2560, -75.6200],
+    "El Poblado": [6.2100, -75.5670],
+    "Belén": [6.2300, -75.6000],
+    "Villa Hermosa": [6.2400, -75.5550]
+  };
+
+  // ======================
+  // 4. PINTAR DATOS
+  // ======================
+  encuestas.forEach(e => {
+
+    const coords = comunasCoords[e.comuna];
+
+    if (!coords) return;
+
+    let color = "green";
+
+    if (e.inundada === "si" && e.danificado === "si") color = "red";
+    else if (e.inundada === "si") color = "orange";
+
+    L.circleMarker(coords, {
+      radius: 8,
+      color: color,
+      fillColor: color,
+      fillOpacity: 0.8
+    }).addTo(map)
+    .bindPopup(`
+      <b>Comuna:</b> ${e.comuna}<br>
+      <b>Inundada:</b> ${e.inundada}
+    `);
+  });
+
+} catch (error) {
+  console.error("❌ ERROR EN MAPA:", error);
+}
+</script>
+
+</body>
+</html>

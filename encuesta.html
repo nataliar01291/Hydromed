@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Hydromed - Encuesta</title>
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', sans-serif;
+    }
+
+    body {
+      height: 100vh;
+      background: linear-gradient(135deg, #0a192f, #112240, #1f4068);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .card {
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(15px);
+      border-radius: 20px;
+      padding: 35px;
+      width: 380px;
+      color: white;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.4);
+      animation: fadeIn 0.8s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px);}
+      to { opacity: 1; transform: translateY(0);}
+    }
+
+    h2 {
+      text-align: center;
+      margin-bottom: 25px;
+      color: #4fc3f7;
+    }
+
+    label {
+      display: block;
+      margin-top: 15px;
+      font-size: 14px;
+      color: #a8d0ff;
+    }
+
+    select {
+      width: 100%;
+      padding: 10px;
+      margin-top: 6px;
+      border-radius: 10px;
+      border: none;
+      outline: none;
+      background: rgba(255,255,255,0.1);
+      color: white;
+      font-size: 14px;
+    }
+
+    select option {
+      color: black;
+    }
+
+    .btn {
+      margin-top: 25px;
+      width: 100%;
+      padding: 12px;
+      border: none;
+      border-radius: 12px;
+      background: linear-gradient(90deg, #2196f3, #21cbf3);
+      color: white;
+      font-size: 16px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    .btn:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 15px #21cbf3;
+    }
+
+    .mensaje {
+      text-align: center;
+      margin-top: 15px;
+      color: #00e676;
+      font-weight: bold;
+    }
+
+    .icono {
+      text-align: center;
+      font-size: 40px;
+      margin-bottom: 10px;
+    }
+
+  </style>
+</head>
+
+<body>
+
+<div class="card">
+
+  <div class="icono">🌊</div>
+
+  <h2>Hydromed</h2>
+
+  <form id="formEncuesta">
+
+    <!-- ================= INUNDACIÓN ================= -->
+    <label>¿Tu zona está inundada?</label>
+    <select id="inundada" required>
+      <option value="">Selecciona</option>
+      <option value="si">Sí</option>
+      <option value="no">No</option>
+    </select>
+
+    <!-- ================= AFECTACIÓN ================= -->
+    <label>¿Quedaste damnificado?</label>
+    <select id="danificado" required>
+      <option value="">Selecciona</option>
+      <option value="si">Sí</option>
+      <option value="no">No</option>
+    </select>
+
+    <!-- ================= COMUNA ================= -->
+    <label>Selecciona tu comuna</label>
+    <select id="comuna" required>
+      <option value="">Selecciona una comuna</option>
+
+      <option value="Popular">Comuna 1 - Popular</option>
+      <option value="Santa Cruz">Comuna 2 - Santa Cruz</option>
+      <option value="Manrique">Comuna 3 - Manrique</option>
+      <option value="Aranjuez">Comuna 4 - Aranjuez</option>
+      <option value="Castilla">Comuna 5 - Castilla</option>
+      <option value="Doce de Octubre">Comuna 6 - Doce de Octubre</option>
+      <option value="Robledo">Comuna 7 - Robledo</option>
+      <option value="Villa Hermosa">Comuna 8 - Villa Hermosa</option>
+      <option value="Buenos Aires">Comuna 9 - Buenos Aires</option>
+      <option value="La Candelaria">Comuna 10 - La Candelaria</option>
+      <option value="Laureles">Comuna 11 - Laureles - Estadio</option>
+      <option value="La América">Comuna 12 - La América</option>
+      <option value="San Javier">Comuna 13 - San Javier</option>
+      <option value="El Poblado">Comuna 14 - El Poblado</option>
+      <option value="Guayabal">Comuna 15 - Guayabal</option>
+      <option value="Belén">Comuna 16 - Belén</option>
+
+      <option value="Altavista">Altavista</option>
+      <option value="San Cristóbal">San Cristóbal</option>
+      <option value="San Antonio de Prado">San Antonio de Prado</option>
+      <option value="Santa Elena">Santa Elena</option>
+      <option value="Palmitas">San Sebastián de Palmitas</option>
+
+    </select>
+
+    <!-- ================= BOTÓN ================= -->
+    <button class="btn" type="submit">Enviar encuesta</button>
+
+  </form>
+
+  <div class="mensaje" id="mensaje"></div>
+
+</div>
+
+<script>
+document.getElementById("formEncuesta").addEventListener("submit", function(e) {
+  e.preventDefault();
+
+  // CAPTURA DATOS LIMPIOS
+  const comuna = document.getElementById("comuna").value;
+  const inundada = document.getElementById("inundada").value;
+  const danificado = document.getElementById("danificado").value;
+
+  // OBTENER DATA EXISTENTE
+  let encuestas = JSON.parse(localStorage.getItem("encuestas")) || [];
+
+  // GUARDAR NUEVO REGISTRO
+  encuestas.push({
+    comuna: comuna,
+    inundada: inundada,
+    danificado: danificado
+  });
+
+  localStorage.setItem("encuestas", JSON.stringify(encuestas));
+
+  // MENSAJE
+  document.getElementById("mensaje").textContent =
+    "✅ Encuesta enviada correctamente";
+
+  // LIMPIAR FORM
+  this.reset();
+});
+</script>
+
+</body>
+</html>

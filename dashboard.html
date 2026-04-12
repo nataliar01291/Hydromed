@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Hydromed Dashboard</title>
+
+  <!--  Librería para gráficos -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <style>
+    /*  Fondo tipo sistema de monitoreo */
+    body {
+      margin: 0;
+      font-family: Arial;
+      background: linear-gradient(135deg, #0a192f, #112240, #1f4068);
+      color: white;
+    }
+
+    /*  Título principal */
+    h1 {
+      text-align: center;
+      padding: 20px;
+      color: #4fc3f7;
+    }
+
+    /*  contenedor de tarjetas */
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 20px;
+      padding: 20px;
+    }
+
+    /*  tarjetas estilo glass */
+    .card {
+      background: rgba(255,255,255,0.08);
+      padding: 20px;
+      border-radius: 15px;
+      text-align: center;
+      backdrop-filter: blur(8px);
+    }
+
+    /*  números grandes */
+    .big {
+      font-size: 30px;
+      color: #21cbf3;
+    }
+
+    /*  gráfico */
+    canvas {
+      max-width: 800px;
+      margin: auto;
+      display: block;
+      padding: 20px;
+    }
+  </style>
+</head>
+
+<body>
+
+<h1>🌊 Hydromed Dashboard</h1>
+
+<!--  métricas -->
+<div class="grid">
+  <div class="card">
+    <h3>Total encuestas</h3>
+    <div class="big" id="total">0</div>
+  </div>
+
+  <div class="card">
+    <h3>Inundadas</h3>
+    <div class="big" id="inundadas">0</div>
+  </div>
+
+  <div class="card">
+    <h3>No inundadas</h3>
+    <div class="big" id="noInundadas">0</div>
+  </div>
+</div>
+
+<!--  gráfico -->
+<canvas id="grafico"></canvas>
+
+<script>
+
+// ===============================
+// 1. CARGAR ENCUESTAS
+// ===============================
+const encuestas = JSON.parse(localStorage.getItem("encuestas")) || [];
+
+console.log("📦 encuestas:", encuestas);
+
+// ===============================
+// 2. CONTADORES BASE
+// ===============================
+let total = encuestas.length;
+let inundadas = 0;
+let noInundadas = 0;
+
+// ===============================
+// 3. PROCESAR ENCUESTAS
+// ===============================
+encuestas.forEach(encuesta => {
+
+  // contar inundación
+  if (encuesta.inundada === "si") {
+    inundadas++;
+  } else {
+    noInundadas++;
+  }
+
+});
+
+// ===============================
+// 4. MOSTRAR DATOS EN PANTALLA
+// ===============================
+document.getElementById("total").textContent = total;
+document.getElementById("inundadas").textContent = inundadas;
+document.getElementById("noInundadas").textContent = noInundadas;
+
+// ===============================
+// 5. GRÁFICO SIMPLE (PRIMERO VALIDAR)
+// ===============================
+new Chart(document.getElementById("grafico"), {
+  type: "doughnut",
+  data: {
+    labels: ["Inundadas", "No inundadas"],
+    datasets: [{
+      data: [inundadas, noInundadas],
+      backgroundColor: ["#21cbf3", "#1f4068"]
+    }]
+  }
+});
+
+</script>
+
+</body>
+</html>

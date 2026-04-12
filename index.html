@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <!-- ============================= -->
+    <!-- CONFIGURACIÓN BÁSICA DEL HTML -->
+    <!-- ============================= -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- TÍTULO DE LA PÁGINA -->
+    <title>HYDROMEDE</title>
+
+    <!-- ICONOS FONT AWESOME -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css">
+
+    <!-- ARCHIVO CSS PRINCIPAL -->
+    <link rel="stylesheet" href="styke.css">
+
+    <!-- ============================= -->
+    <!-- ESTILOS INTERNOS (SOLO MEJORAS) -->
+    <!-- ============================= -->
+    <style>
+
+        /* MENÚ DE NAVEGACIÓN */
+        .nav_menu li a{
+            text-decoration: none; /* quita subrayado */
+            color: white; /* color blanco */
+            font-weight: 500;
+            transition: 0.3s;
+        }
+
+        /* EFECTO HOVER DEL MENÚ */
+        .nav_menu li a:hover{
+            color: #4fc3f7;
+        }
+
+        /* BOTÓN DASHBOARD */
+        .btn-dashboard{
+            background: linear-gradient(135deg, #21cbf3, #1f4068);
+            color: white;
+            padding: 10px 18px;
+            border-radius: 10px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: 0.3s;
+            display: inline-block;
+        }
+
+        /* ANIMACIÓN BOTÓN */
+        .btn-dashboard:hover{
+            transform: scale(1.05);
+            box-shadow: 0px 5px 20px rgba(33,203,243,0.4);
+        }
+
+        /* TODAS LAS CARDS */
+        .card{
+            transition: 0.3s;
+        }
+
+        /* EFECTO HOVER CARDS */
+        .card:hover{
+            transform: translateY(-5px);
+        }
+
+        /* IMAGEN ENCUESTA */
+        .encuesta-btn img{
+            transition: 0.3s;
+            border-radius: 10px;
+        }
+
+        .encuesta-btn img:hover{
+            transform: scale(1.05);
+        }
+
+        /* ESTADO DINÁMICO SIATA */
+        .siata-status{
+            margin-top: 10px;
+            font-size: 14px;
+            color: #4fc3f7;
+            font-weight: bold;
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+<!-- ============================= -->
+<!-- CONTENEDOR PRINCIPAL -->
+<!-- ============================= -->
+<div class="container">
+
+    <!-- ============================= -->
+    <!-- NAVBAR SUPERIOR -->
+    <!-- ============================= -->
+    <nav class="nav-main">
+
+        <!-- LOGO PRINCIPAL -->
+        <img src="logo hydromed.png" style="width: 130px;" alt="HYDROMEDE Logo">
+
+        <!-- MENÚ PRINCIPAL -->
+        <ul class="nav_menu">
+
+            <!--  BOTÓN SEGUIMIENTO DE ZONA -->
+<li>
+    <a href="#" onclick="pedirZona()">
+        Seguimiento de tu zona
+    </a>
+</li>
+            
+            <li><a href="encuesta.html">Encuesta</a></li>
+           
+
+            <li>
+                <a class="btn-dashboard" href="dashboard.html">
+                    📊 Estadísticas
+                </a>
+            </li>
+
+        </ul>
+
+        <!-- ICONO BUSQUEDA -->
+        <ul class="nav-menu right">
+            <li>
+                <a href="#">
+                    <i class="fas fa-search"></i>
+                </a>
+            </li>
+        </ul>
+
+    </nav>
+
+    <hr>
+
+    <!-- ============================= -->
+    <!-- HEADER PRINCIPAL -->
+    <!-- ============================= -->
+    <header class="showcase">
+
+        <h2>Noticias de hoy</h2>
+
+        <p>
+            Lorem, ipsum dolor sit amet consectetur adipisicing elit.
+        </p>
+
+        <a href="#" class="btn">
+            Leer más <i class="fas fa-angles-right"></i>
+        </a>
+
+    </header>
+
+    <!-- ============================= -->
+    <!-- SECCIÓN DE CARDS -->
+    <!-- ============================= -->
+    <div class="noticias_inundaciones">
+
+        <!-- CARD MAPA -->
+        <div class="card">
+            <div class="card-img">
+                <a href="mapa.html">
+                    <img src="MAPAS_LLUVIA.jpg" alt="Mapa">
+                </a>
+            </div>
+            <h3>Mapa de riesgo</h3>
+            <p>Ver inundaciones en tiempo real</p>
+        </div>
+
+       <!--  CARD INUNDACIONES CON ACCESO A NOTICIAS EN TIEMPO REAL -->
+<div class="card">
+
+    <!--  imagen ingenieros  -->
+    <div class="card-img">
+        <img src="INUN_2.jpg" alt="Inundaciones">
+    </div>
+
+    <!--  título -->
+    <h3>Inundaciones</h3>
+
+    <!--  descripción -->
+    <p>Consulta alertas en tiempo real de fuentes oficiales</p>
+
+    <!-- ============================= -->
+    <!--  BOTONES DE NOTICIAS -->
+    <!-- ============================= -->
+    <div style="display:flex; gap:10px; margin:10px; flex-wrap:wrap;">
+
+        <!--  BOTÓN IDEAM -->
+        <a href="https://x.com/IDEAMColombia" target="_blank"
+           style="
+           flex:1;
+           text-align:center;
+           background:#1da1f2;
+           color:white;
+           padding:8px;
+           border-radius:8px;
+           text-decoration:none;
+           font-size:13px;
+           font-weight:bold;
+           ">
+           🌧️ IDEAM
+        </a>
+
+        <!--  BOTÓN SIATA -->
+        <a href="https://x.com/siatamedellin" target="_blank"
+           style="
+           flex:1;
+           text-align:center;
+           background:#0a192f;
+           color:#4fc3f7;
+           padding:8px;
+           border-radius:8px;
+           text-decoration:none;
+           font-size:13px;
+           font-weight:bold;
+           border:1px solid #4fc3f7;
+           ">
+           ⚠️ SIATA
+        </a>
+
+    </div>
+
+</div>
+
+        <!-- CARD ENCUESTAS -->
+        <div class="card">
+
+            <div class="card-img encuesta-btn">
+                <a href="encuesta.html">
+                    <img src="encuestas.png" alt="Ir a encuesta">
+                </a>
+            </div>
+
+            <h3>Encuestas</h3>
+            <p>Haz clic para responder</p>
+
+        </div>
+
+<!--  CARD SIATA CON LINK EXTERNO REAL -->
+<div class="card" onclick="window.open('https://siata.gov.co/sitio_web/index.php/', '_blank')" style="cursor:pointer;">
+
+    <!--  imagen SIATA -->
+    <div class="card-img">
+        <img id="siata-img" src="siata200Challenge.png" alt="SIATA">
+    </div>
+
+    <!--  título -->
+    <h3>Noticias SIATA</h3>
+
+    <!--  descripción -->
+    <p>Monitoreo climático en tiempo real</p>
+
+    <!--  estado dinámico -->
+    <div id="siata-status">
+        🔄 Datos climáticos en vivo
+    </div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+
+</a>
+
+    </div>
+
+</div>
+
+<!-- ============================= -->
+<!-- SCRIPT SIATA (SIMULADO) -->
+<!-- ============================= -->
+<script>
+
+    // ============================
+    // FUNCIÓN SIATA
+    // ============================
+    function actualizarSIATA(){
+
+        // estados simulados del sistema
+        const estados = [
+            "🌧️ Lluvias moderadas",
+            "⛈️ Tormenta eléctrica",
+            "🌤️ Clima estable",
+            "⚠️ Alerta por lluvias fuertes"
+        ];
+
+        // seleccionar estado aleatorio
+        const estado = estados[Math.floor(Math.random() * estados.length)];
+
+        // mostrar en pantalla
+        document.getElementById("siata-status").innerText = estado;
+
+        // imagen (por ahora fija)
+        document.getElementById("siata-img").src = "siata200Challenge.png";
+    }
+
+    // ejecutar al cargar página
+    actualizarSIATA();
+
+    // actualizar cada 60 segundos
+    setInterval(actualizarSIATA, 60000);
+
+</script>
+
+<!-- ============================= -->
+<!-- MAPA JS (NO MODIFICADO) -->
+<!-- ============================= -->
+<script src="mapa.js"></script>
+<!-- ===================================== -->
+<!--  CONEXIÓN A SISTEMA SIATA JS -->
+<!-- ===================================== -->
+<script src="siata.js"></script>
+<script>
+// ================================
+//  FUNCIÓN PEDIR ZONA AL USUARIO
+// ================================
+function pedirZona(){
+
+    // pedir comuna
+    let comuna = prompt("Ingresa tu comuna (Ej: Belén, Robledo, El Poblado)");
+
+    // validar que escribió algo
+    if(comuna){
+
+        // guardar en localStorage
+        localStorage.setItem("zonaUsuario", comuna);
+
+        // redirigir a página de zona
+        window.location.href = "zona.html";
+    }
+}
+</script>
+
+</body>
+</html>

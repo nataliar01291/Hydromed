@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Prueba CSV + Cruce</title>
+</head>
+
+<body>
+
+<h2>Prueba final (Encuestas + CSV)</h2>
+
+<pre id="resultado">Cargando...</pre>
+
+<script>
+fetch("datos.csv")
+  .then(res => res.text())
+  .then(csvData => {
+
+    const filas = csvData.split("\n");
+    const encabezados = filas[0].split(";").map(e => e.trim());
+
+    let baseDatos = [];
+
+    for (let i = 1; i < filas.length; i++) {
+      if (!filas[i]) continue;
+
+      let valores = filas[i].split(";");
+
+      let obj = {};
+      encabezados.forEach((e, index) => {
+        obj[e] = valores[index]?.trim();
+      });
+
+      baseDatos.push(obj);
+    }
+
+    console.log("BASE DATOS:", baseDatos);
+
+    const encuestas = JSON.parse(localStorage.getItem("encuestas")) || [];
+
+    let resultado = [];
+
+    encuestas.forEach(encuesta => {
+
+      if (!encuesta.direccion) return;
+
+      let direccionUsuario = encuesta.direccion
+        .toLowerCase()
+        .trim()
+        .replace(/\s+/g, " ");
+
+      let numeroUsuario = direccionUsuario.match(/\d+/);
+
+      let encontrada = baseDatos.find(zona => {
+
+        // 🔥 BUSCAR AUTOMÁTICAMENTE LA COLUMNA DE VÍA
+        let via = Object.values(zona).find(valor => {
+          if (!valor) return false;
+
+          let v = valor.toLowerCase();
+
+          return v.includes("calle") || 
+                 v.includes("carrera") || 
+                 v.includes("vía") || 
+                 v.includes("via");
+        });
+
+        if (!via) return false;
+
+        via = via.toLowerCase().trim().replace(/\s+/g, " ");
+
+        let numeroZona = via.match(/\d+/);
+
+        return (
+          numeroUsuario &&
+          numeroZona &&
+          numeroUsuario[0] === numeroZona[0]
+        );
+      });
+
+      if (encontrada) {
+        resultado.push({
+          direccion: encuesta.direccion,
+          comuna: encontrada["Nombre comuna"],
+          numero: encontrada["Numero_Com"],
+          inundada: encuesta.inundada,
+          danificado: encuesta.danificado
+        });
+      }
+
+    });
+
+    console.log("RESULTADO FINAL:", resultado);
+
+    if (resultado.length === 0) {
+      document.getElementById("resultado").textContent =
+        "⚠️ Aún no coincide, pero ya estamos MUY cerca.\n\nDime qué aparece en consola.";
+    } else {
+      document.getElementById("resultado").textContent =
+        JSON.stringify(resultado, null, 2);
+    }
+
+  })
+  .catch(err => {
+    console.error(err);
+    document.getElementById("resultado").textContent = "ERROR cargando CSV";
+  });
+</script>
+
+</body>
+</html>

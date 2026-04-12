@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Hydromed - Gráficos</title>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(135deg, #0a192f, #112240, #1f4068);
+      color: white;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    h1 {
+      margin: 20px;
+      color: #4fc3f7;
+    }
+
+    .card {
+      width: 90%;
+      max-width: 900px;
+      background: rgba(255,255,255,0.05);
+      backdrop-filter: blur(15px);
+      border-radius: 20px;
+      padding: 20px;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.4);
+    }
+
+    canvas {
+      margin-top: 20px;
+    }
+  </style>
+</head>
+
+<body>
+
+<h1>🌊 Hydromed - Análisis</h1>
+
+<div class="card">
+  <canvas id="grafico"></canvas>
+</div>
+
+<script>
+fetch("datos.csv")
+  .then(res => res.text())
+  .then(csvData => {
+
+    // =========================
+    // 1. LEER CSV
+    // =========================
+    const filas = csvData.split("\n");
+    const encabezados = filas[0].split(";").map(e => e.trim());
+
+    let baseDatos = [];
+
+    for (let i = 1; i < filas.length; i++) {
+      if (!filas[i]) continue;
+
+      let valores = filas[i].split(";");
+
+      let obj = {};
+      encabezados.forEach((e, index) => {
+        obj[e] = valores[index]?.trim();
+      });
+
+      baseDatos.push(obj);
+    }
+
+    console.log("BASE DATOS:", baseDatos);
+
+    // =========================
+    // 2. LEER ENCUESTAS
+    // =========================
+    const encuestas = JSON.parse(localStorage.getItem("encuestas")) || [];
+
+    console.log("ENCUESTAS:", encuestas);
+
+    let conteo = {};
+
+    // =========================
+    // 3. CRUCE
+    // =========================
+    encuestas.forEach(encuesta => {
+
+      let direccion = encuesta.direccion.toLowerCase();
+      let numeroUsuario = direccion.match(/\d+/);
+
+      let encontrada = baseDatos.find(zona => {
+
+        let via = Object.values(zona).find(v =>
+          v && (
+            v.toLowerCase().includes("calle") ||
+            v.toLowerCase().includes("carrera")
+          )
+        );
+
+        if (!via) return false;
+
+        let numeroZona = via.match(/\d+/);
+
+        return numeroUsuario && numeroZona && numeroUsuario[0] === numeroZona[0];
+      });
+
+      if (encontrada && encuesta.inundada === "si") {
+        let comuna = encontrada["Nombre comuna"];
+
+        conteo[comuna] = (conteo[comuna] || 0) + 1;
+      }
+
+    });
+
+    const labels = Object.keys(conteo);
+    const datos = Object.values(conteo);
+
+    console.log("LABELS:", labels);
+    console.log("DATOS:", datos);
+
+    // =========================
+    // 4. MOSTRAR MENSAJE SI VACÍO
+    // =========================
+    if (labels.length === 0) {
+      document.body.innerHTML += "<p>No hay datos suficientes aún.</p>";
+      return;
+    }
+
+    // =========================
+    // 5. CREAR GRÁFICO
+    // =========================
+    new Chart(document.getElementById("grafico"), {
+      type: "bar",
+      data: {
+        labels: labels,
+        datasets: [{
+          label: "Zonas inundadas por comuna",
+          data: datos,
+          backgroundColor: "rgba(33, 203, 243, 0.6)",
+          borderColor: "#21cbf3",
+          borderWidth: 2
+        }]
+      },
+      options: {
+        plugins: {
+          legend: {
+            labels: { color: "white" }
+          }
+        },
+        scales: {
+          x: {
+            ticks: { color: "white" }
+          },
+          y: {
+            ticks: { color: "white" }
+          }
+        }
+      }
+    });
+
+  })
+  .catch(err => {
+    console.error(err);
+    document.body.innerHTML += "<p>Error cargando datos</p>";
+  });
+</script>
+
+</body>
+</html>
