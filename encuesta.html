@@ -2,197 +2,373 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>Hydromed - Encuesta</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hydromed — Encuesta de Afectación</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" media="print" onload="this.media='all'">
+  <noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"></noscript>
+  <link rel="stylesheet" href="hydro.css">
 
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: 'Segoe UI', sans-serif;
-    }
-
-    body {
-      height: 100vh;
-      background: linear-gradient(135deg, #0a192f, #112240, #1f4068);
+    /* Centra el contenido del formulario */
+    .page-wrap {
+      min-height: 100vh;
       display: flex;
-      justify-content: center;
+      flex-direction: column;
       align-items: center;
+      justify-content: flex-start;
+      padding: 80px 16px 40px;
+      position: relative;
+      z-index: 10;
     }
 
-    .card {
-      background: rgba(255, 255, 255, 0.05);
-      backdrop-filter: blur(15px);
-      border-radius: 20px;
-      padding: 35px;
-      width: 380px;
-      color: white;
-      box-shadow: 0 10px 40px rgba(0,0,0,0.4);
-      animation: fadeIn 0.8s ease;
+    /* Tarjeta principal del formulario */
+    .card-form {
+      width: 100%; max-width: 400px;
+      border-radius: 22px;
+      overflow: hidden;
     }
 
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(20px);}
-      to { opacity: 1; transform: translateY(0);}
+    /* Línea decorativa superior */
+    .card-top-line {
+      height: 2px;
+      background: linear-gradient(90deg, transparent, rgba(56,189,248,0.8) 30%, rgba(45,212,191,0.8) 70%, transparent);
     }
 
-    h2 {
-      text-align: center;
-      margin-bottom: 25px;
-      color: #4fc3f7;
-    }
+    .card-inner { padding: 26px 24px 28px; }
 
-    label {
-      display: block;
-      margin-top: 15px;
-      font-size: 14px;
-      color: #a8d0ff;
+    /* Indicador de progreso — 3 puntos */
+    .progress-dots {
+      display: flex; align-items: center; justify-content: center;
+      gap: 0; margin-bottom: 24px;
     }
-
-    select {
-      width: 100%;
-      padding: 10px;
-      margin-top: 6px;
-      border-radius: 10px;
-      border: none;
-      outline: none;
-      background: rgba(255,255,255,0.1);
-      color: white;
-      font-size: 14px;
+    .dot {
+      width: 10px; height: 10px; border-radius: 50%;
+      background: rgba(56,189,248,0.2);
+      transition: background 0.3s, box-shadow 0.3s;
     }
+    .dot.active  { background: #38bdf8; box-shadow: 0 0 8px rgba(56,189,248,0.5); }
+    .dot.done    { background: #4ade80; box-shadow: 0 0 8px rgba(74,222,128,0.4); }
+    .dot-line    { width: 50px; height: 2px; background: rgba(56,189,248,0.15); transition: background 0.3s; }
+    .dot-line.done { background: #4ade80; }
 
-    select option {
-      color: black;
+    /* Encabezado del form */
+    .form-title { font-size: 18px; font-weight: 600; color: var(--text-main); margin-bottom: 4px; }
+    .form-sub   { font-size: 12px; color: var(--text-faint); margin-bottom: 20px; line-height: 1.5; }
+
+    /* Separador interno */
+    .sep { height: 1px; background: linear-gradient(90deg, transparent, rgba(56,189,248,0.12), transparent); margin: 14px 0; }
+
+    /* Grupos de campo */
+    .field-lbl {
+      display: flex; align-items: center; gap: 6px;
+      font-size: 10px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase;
+      color: #7dd3fc; margin-bottom: 5px;
     }
+    .field-q { font-size: 13px; color: var(--text-main); margin-bottom: 8px; }
 
-    .btn {
-      margin-top: 25px;
-      width: 100%;
-      padding: 12px;
-      border: none;
-      border-radius: 12px;
-      background: linear-gradient(90deg, #2196f3, #21cbf3);
-      color: white;
-      font-size: 16px;
-      cursor: pointer;
-      transition: 0.3s;
+    /* Select personalizado */
+    .sel-wrap { position: relative; }
+    .sel-wrap::after {
+      content: '▾'; position: absolute; right: 13px; top: 50%;
+      transform: translateY(-50%); color: rgba(56,189,248,0.6);
+      pointer-events: none; font-size: 14px;
     }
-
-    .btn:hover {
-      transform: scale(1.05);
-      box-shadow: 0 0 15px #21cbf3;
+    .custom-sel {
+      width: 100%; padding: 11px 38px 11px 14px;
+      background: rgba(7,24,40,0.75);
+      border: 1px solid rgba(56,189,248,0.18);
+      border-radius: 11px; color: white;
+      font-family: 'DM Sans', sans-serif; font-size: 13px;
+      appearance: none; -webkit-appearance: none;
+      cursor: pointer; outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
     }
-
-    .mensaje {
-      text-align: center;
-      margin-top: 15px;
-      color: #00e676;
-      font-weight: bold;
+    .custom-sel:focus {
+      border-color: rgba(56,189,248,0.55);
+      background: rgba(14,165,233,0.07);
+      box-shadow: 0 0 0 3px rgba(56,189,248,0.13);
     }
+    .custom-sel option { background: #071828; color: white; }
 
-    .icono {
-      text-align: center;
-      font-size: 40px;
-      margin-bottom: 10px;
+    /* Botón enviar */
+    .btn-send {
+      width: 100%; padding: 13px;
+      background: linear-gradient(135deg, #0ea5e9, #0284c7);
+      color: white; border: none; border-radius: 12px;
+      font-family: 'DM Sans', sans-serif; font-size: 15px; font-weight: 600;
+      cursor: pointer; margin-top: 20px;
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+      transition: opacity 0.2s, box-shadow 0.2s;
     }
+    .btn-send:hover { opacity: 0.86; box-shadow: 0 4px 20px rgba(14,165,233,0.3); }
 
+    /* Panel de éxito */
+    .success-panel { text-align: center; padding: 12px 0 4px; }
+    .success-ico {
+      width: 60px; height: 60px; border-radius: 50%;
+      background: rgba(74,222,128,0.12);
+      border: 2px solid rgba(74,222,128,0.35);
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 14px;
+      box-shadow: 0 0 24px rgba(74,222,128,0.18);
+    }
+    .success-ico svg { width: 26px; height: 26px; }
+    .success-title { font-size: 18px; font-weight: 600; color: #4ade80; margin-bottom: 6px; }
+    .success-sub   { font-size: 12px; color: var(--text-faint); margin-bottom: 16px; line-height: 1.6; }
+    .resumen {
+      background: rgba(7,24,40,0.65);
+      border: 1px solid rgba(56,189,248,0.12);
+      border-radius: 12px; padding: 14px; text-align: left;
+      margin-bottom: 14px;
+    }
+    .resumen-row {
+      display: flex; justify-content: space-between; align-items: center;
+      font-size: 12px; color: var(--text-faint); margin-bottom: 7px;
+    }
+    .resumen-row:last-child { margin-bottom: 0; }
+    .resumen-row span:last-child { font-weight: 600; color: var(--text-main); }
+
+    .btn-nuevo {
+      background: transparent; border: 1px solid rgba(56,189,248,0.28);
+      color: #7dd3fc; padding: 10px 22px; border-radius: 10px;
+      font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 500;
+      cursor: pointer; transition: background 0.2s; margin-top: 4px;
+    }
+    .btn-nuevo:hover { background: rgba(56,189,248,0.09); }
+
+    /* Footer mínimo de la encuesta */
+    .enc-footer { margin-top: 14px; text-align: center; font-size: 11px; color: rgba(100,116,139,0.5); }
   </style>
 </head>
-
 <body>
 
-<div class="card">
+  <div class="wave-layer wave-1"></div>
+  <div class="wave-layer wave-2"></div>
 
-  <div class="icono">🌊</div>
+  <!-- NAVBAR -->
+  <nav class="navbar">
+    <div class="navbar-inner">
+      <a href="index.html" class="brand">
+        <div class="brand-icon">🌊</div>
+        <span class="brand-name">HYDROMED</span>
+      </a>
+      <ul class="nav-links">
+        <li><a href="index.html" class="nav-link"><i class="fas fa-house" style="font-size:11px;margin-right:3px;"></i>Inicio</a></li>
+        <li><a href="mapa.html" class="nav-link">Mapa</a></li>
+        <li><a href="dashboard.html" class="btn-nav">📊 Estadísticas</a></li>
+      </ul>
+      <!-- BOTÓN VOLVER siempre visible -->
+      <a href="index.html" class="btn-back">
+        <i class="fas fa-arrow-left"></i> Volver
+      </a>
+    </div>
+  </nav>
 
-  <h2>Hydromed</h2>
+  <div class="page-wrap">
 
-  <form id="formEncuesta">
+    <!-- Encabezado de página -->
+    <div class="fade-in d1" style="text-align:center;margin-bottom:20px;width:100%;max-width:400px;">
+      <div class="badge badge-blue" style="margin-bottom:12px;">
+        <i class="fas fa-clipboard-list"></i> Reporte ciudadano
+      </div>
+      <h1 style="font-family:'Bebas Neue',cursive;font-size:clamp(32px,7vw,48px);letter-spacing:3px;
+                 color:white;text-shadow:0 0 24px rgba(56,189,248,0.2);">
+        ENCUESTA <span style="color:#38bdf8;">HYDROMED</span>
+      </h1>
+      <p style="font-size:12px;color:var(--text-faint);margin-top:6px;">
+        Tu información ayuda a coordinar la respuesta de emergencias en tu comunidad.
+      </p>
+    </div>
 
-    <!-- ================= INUNDACIÓN ================= -->
-    <label>¿Tu zona está inundada?</label>
-    <select id="inundada" required>
-      <option value="">Selecciona</option>
-      <option value="si">Sí</option>
-      <option value="no">No</option>
-    </select>
+    <!-- CARD FORMULARIO -->
+    <div class="glass card-form fade-in d2">
+      <div class="card-top-line"></div>
+      <div class="card-inner">
 
-    <!-- ================= AFECTACIÓN ================= -->
-    <label>¿Quedaste damnificado?</label>
-    <select id="danificado" required>
-      <option value="">Selecciona</option>
-      <option value="si">Sí</option>
-      <option value="no">No</option>
-    </select>
+        <!-- Indicador de progreso -->
+        <div class="progress-dots">
+          <div class="dot" id="dot1"></div>
+          <div class="dot-line" id="line1"></div>
+          <div class="dot" id="dot2"></div>
+          <div class="dot-line" id="line2"></div>
+          <div class="dot" id="dot3"></div>
+        </div>
 
-    <!-- ================= COMUNA ================= -->
-    <label>Selecciona tu comuna</label>
-    <select id="comuna" required>
-      <option value="">Selecciona una comuna</option>
+        <!-- FORMULARIO -->
+        <div id="formulario">
+          <div class="form-title">Reporte de afectación</div>
+          <div class="form-sub">Responde las 3 preguntas para registrar el estado de tu zona.</div>
 
-      <option value="Popular">Comuna 1 - Popular</option>
-      <option value="Santa Cruz">Comuna 2 - Santa Cruz</option>
-      <option value="Manrique">Comuna 3 - Manrique</option>
-      <option value="Aranjuez">Comuna 4 - Aranjuez</option>
-      <option value="Castilla">Comuna 5 - Castilla</option>
-      <option value="Doce de Octubre">Comuna 6 - Doce de Octubre</option>
-      <option value="Robledo">Comuna 7 - Robledo</option>
-      <option value="Villa Hermosa">Comuna 8 - Villa Hermosa</option>
-      <option value="Buenos Aires">Comuna 9 - Buenos Aires</option>
-      <option value="La Candelaria">Comuna 10 - La Candelaria</option>
-      <option value="Laureles">Comuna 11 - Laureles - Estadio</option>
-      <option value="La América">Comuna 12 - La América</option>
-      <option value="San Javier">Comuna 13 - San Javier</option>
-      <option value="El Poblado">Comuna 14 - El Poblado</option>
-      <option value="Guayabal">Comuna 15 - Guayabal</option>
-      <option value="Belén">Comuna 16 - Belén</option>
+          <!-- Campo 1 -->
+          <div>
+            <div class="field-lbl"><i class="fas fa-triangle-exclamation" style="font-size:10px;"></i> Pregunta 1 · Estado de zona</div>
+            <div class="field-q">¿Tu zona está actualmente inundada?</div>
+            <div class="sel-wrap">
+              <select id="inundada" class="custom-sel" onchange="updateProgress()" required>
+                <option value="">Selecciona una opción</option>
+                <option value="si">✅ Sí — Mi zona está inundada</option>
+                <option value="no">🔵 No — Mi zona está despejada</option>
+              </select>
+            </div>
+          </div>
 
-      <option value="Altavista">Altavista</option>
-      <option value="San Cristóbal">San Cristóbal</option>
-      <option value="San Antonio de Prado">San Antonio de Prado</option>
-      <option value="Santa Elena">Santa Elena</option>
-      <option value="Palmitas">San Sebastián de Palmitas</option>
+          <div class="sep"></div>
 
-    </select>
+          <!-- Campo 2 -->
+          <div>
+            <div class="field-lbl"><i class="fas fa-house" style="font-size:10px;"></i> Pregunta 2 · Afectación personal</div>
+            <div class="field-q">¿Quedaste damnificado por la inundación?</div>
+            <div class="sel-wrap">
+              <select id="danificado" class="custom-sel" onchange="updateProgress()" required>
+                <option value="">Selecciona una opción</option>
+                <option value="si">✅ Sí — Resultué damnificado/a</option>
+                <option value="no">🔵 No — No resultué afectado/a</option>
+              </select>
+            </div>
+          </div>
 
-    <!-- ================= BOTÓN ================= -->
-    <button class="btn" type="submit">Enviar encuesta</button>
+          <div class="sep"></div>
 
-  </form>
+          <!-- Campo 3 -->
+          <div>
+            <div class="field-lbl"><i class="fas fa-map-pin" style="font-size:10px;"></i> Pregunta 3 · Ubicación</div>
+            <div class="field-q">¿En qué comuna o corregimiento te encuentras?</div>
+            <div class="sel-wrap">
+              <select id="comuna" class="custom-sel" onchange="updateProgress()" required>
+                <option value="">Selecciona tu ubicación</option>
+                <optgroup label="── Comunas Urbanas ──">
+                  <option value="Popular">1 · Popular</option>
+                  <option value="Santa Cruz">2 · Santa Cruz</option>
+                  <option value="Manrique">3 · Manrique</option>
+                  <option value="Aranjuez">4 · Aranjuez</option>
+                  <option value="Castilla">5 · Castilla</option>
+                  <option value="Doce de Octubre">6 · Doce de Octubre</option>
+                  <option value="Robledo">7 · Robledo</option>
+                  <option value="Villa Hermosa">8 · Villa Hermosa</option>
+                  <option value="Buenos Aires">9 · Buenos Aires</option>
+                  <option value="La Candelaria">10 · La Candelaria</option>
+                  <option value="Laureles">11 · Laureles – Estadio</option>
+                  <option value="La América">12 · La América</option>
+                  <option value="San Javier">13 · San Javier</option>
+                  <option value="El Poblado">14 · El Poblado</option>
+                  <option value="Guayabal">15 · Guayabal</option>
+                  <option value="Belén">16 · Belén</option>
+                </optgroup>
+                <optgroup label="── Corregimientos ──">
+                  <option value="Altavista">Altavista</option>
+                  <option value="San Cristóbal">San Cristóbal</option>
+                  <option value="San Antonio de Prado">San Antonio de Prado</option>
+                  <option value="Santa Elena">Santa Elena</option>
+                  <option value="Palmitas">San Sebastián de Palmitas</option>
+                </optgroup>
+              </select>
+            </div>
+          </div>
 
-  <div class="mensaje" id="mensaje"></div>
+          <!-- Botón -->
+          <button class="btn-send" onclick="enviar()">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2L11 13"/><path d="M22 2L15 22 11 13 2 9l20-7z"/></svg>
+            Enviar reporte
+          </button>
+        </div>
 
-</div>
+        <!-- ÉXITO (oculto por defecto) -->
+        <div id="exito" style="display:none;">
+          <div class="success-panel">
+            <div class="success-ico">
+              <svg viewBox="0 0 24 24" fill="none" stroke="#4ade80" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="20 6 9 17 4 12"/>
+              </svg>
+            </div>
+            <div class="success-title">¡Reporte enviado!</div>
+            <div class="success-sub">Tu información ha sido registrada.<br>Gracias por contribuir al sistema de alerta comunitaria.</div>
+            <div class="resumen" id="resumen-data"></div>
+            <p style="font-size:11px;color:var(--text-faint);margin-bottom:12px;">
+              Total de reportes en este dispositivo: <strong id="total-reportes" style="color:#38bdf8;"></strong>
+            </p>
+            <button class="btn-nuevo" onclick="reiniciar()">Enviar otro reporte</button>
+          </div>
+        </div>
 
-<script>
-document.getElementById("formEncuesta").addEventListener("submit", function(e) {
-  e.preventDefault();
+      </div>
+    </div>
 
-  // CAPTURA DATOS LIMPIOS
-  const comuna = document.getElementById("comuna").value;
-  const inundada = document.getElementById("inundada").value;
-  const danificado = document.getElementById("danificado").value;
+    <div class="enc-footer fade-in d3">Reporte ciudadano · Medellín · Sistema Hydromed</div>
 
-  // OBTENER DATA EXISTENTE
-  let encuestas = JSON.parse(localStorage.getItem("encuestas")) || [];
+  </div>
 
-  // GUARDAR NUEVO REGISTRO
-  encuestas.push({
-    comuna: comuna,
-    inundada: inundada,
-    danificado: danificado
-  });
+  <script>
+    /* Indicador de progreso */
+    function updateProgress() {
+      const v = ['inundada','danificado','comuna'].map(id => document.getElementById(id).value);
+      const filled = v.filter(x => x !== '').length;
 
-  localStorage.setItem("encuestas", JSON.stringify(encuestas));
+      const d = ['dot1','dot2','dot3'];
+      const l = ['line1','line2'];
 
-  // MENSAJE
-  document.getElementById("mensaje").textContent =
-    "✅ Encuesta enviada correctamente";
+      d.forEach((id, i) => {
+        const el = document.getElementById(id);
+        el.className = 'dot' + (i < filled ? ' done' : i === filled ? ' active' : '');
+      });
+      l.forEach((id, i) => {
+        const el = document.getElementById(id);
+        el.className = 'dot-line' + (i + 1 < filled ? ' done' : '');
+      });
+    }
+    updateProgress();
 
-  // LIMPIAR FORM
-  this.reset();
-});
-</script>
+    /* Enviar formulario */
+    function enviar() {
+      const inundada  = document.getElementById('inundada').value;
+      const danificado = document.getElementById('danificado').value;
+      const comuna    = document.getElementById('comuna').value;
 
+      if (!inundada || !danificado || !comuna) {
+        ['inundada','danificado','comuna'].forEach(id => {
+          const el = document.getElementById(id);
+          if (!el.value) {
+            el.style.borderColor = 'rgba(251,146,60,0.6)';
+            el.style.boxShadow   = '0 0 0 3px rgba(251,146,60,0.12)';
+            setTimeout(() => { el.style.borderColor='rgba(56,189,248,0.18)'; el.style.boxShadow='none'; }, 2000);
+          }
+        });
+        return;
+      }
+
+      const registro = { fecha: new Date().toISOString(), comuna, inundada, danificado };
+      const enc = JSON.parse(localStorage.getItem('encuestas') || '[]');
+      enc.push(registro);
+      localStorage.setItem('encuestas', JSON.stringify(enc));
+
+      // Construir resumen
+      const esI = inundada   === 'si';
+      const esD = danificado === 'si';
+      document.getElementById('resumen-data').innerHTML = `
+        <div class="resumen-row"><span>📍 Ubicación</span><span>${comuna}</span></div>
+        <div class="resumen-row"><span>🚨 Zona inundada</span><span style="color:${esI?'#fb923c':'#4ade80'};">${esI?'Sí':'No'}</span></div>
+        <div class="resumen-row"><span>🏠 Damnificado/a</span><span style="color:${esD?'#fb923c':'#4ade80'};">${esD?'Sí':'No'}</span></div>
+        <div class="resumen-row"><span>🕐 Fecha</span><span>${new Date().toLocaleDateString('es-CO',{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'})}</span></div>
+      `;
+      document.getElementById('total-reportes').textContent = enc.length;
+
+      document.getElementById('formulario').style.display = 'none';
+      document.getElementById('exito').style.display = 'block';
+    }
+
+    /* Reiniciar */
+    function reiniciar() {
+      ['inundada','danificado','comuna'].forEach(id => {
+        const el = document.getElementById(id);
+        el.value = ''; el.style.borderColor=''; el.style.boxShadow='';
+      });
+      updateProgress();
+      document.getElementById('formulario').style.display = 'block';
+      document.getElementById('exito').style.display = 'none';
+    }
+  </script>
 </body>
+</html>
 </html>
