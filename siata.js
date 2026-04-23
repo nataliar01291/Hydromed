@@ -1,7 +1,5 @@
-//
-// =====================================
+
 // 🌦️ SIATA JS - CONTROL DE CLIMA DINÁMICO
-// =====================================
 // Este archivo controla:
 // - actualización del clima en la card
 // - redirección a página SIATA
